@@ -11,9 +11,9 @@ public class TicTacToeGUI {
 
     public TicTacToeGUI() {
         frame = new JFrame("Крестики-нолики");
-        frame.setSize(300, 300);
+        frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(3, 3));
+        frame.setLayout(new GridBagLayout());
 
         board = new Board();
         buttons = new JButton[3][3];
@@ -46,10 +46,15 @@ public class TicTacToeGUI {
     }
 
     public void initializeButtons() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 buttons[i][j] = new JButton("-");
-                buttons[i][j].setFont(new Font("Arial", Font.PLAIN, 60));
+                buttons[i][j].setFont(new Font("Arial", Font.BOLD, 60));
+                buttons[i][j].setBackground(Color.DARK_GRAY);
+                buttons[i][j].setForeground(Color.white);
                 final int row = i;
                 final int col = j;
                 buttons[i][j].addActionListener(new ActionListener() {
@@ -69,7 +74,9 @@ public class TicTacToeGUI {
                     }
                 }
                 });
-                frame.add(buttons[i][j]);
+                gbc.gridx = j;
+                gbc.gridy = i;
+                frame.add(buttons[i][j], gbc);
             }
         }
     }
