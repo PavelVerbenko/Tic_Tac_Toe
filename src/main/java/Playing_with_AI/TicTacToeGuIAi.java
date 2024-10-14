@@ -1,3 +1,8 @@
+package Playing_with_AI;
+
+import Playing_with_each_other.Board;
+import Playing_with_each_other.TicTacToeGUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

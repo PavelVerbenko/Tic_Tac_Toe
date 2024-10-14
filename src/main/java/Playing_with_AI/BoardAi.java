@@ -1,7 +1,9 @@
-public class Board {
+package Playing_with_AI;
+
+public class BoardAi {
     public char[][] board = new char[3][3];
 
-    public Board() {
+    public BoardAi() {
         initializeBoard();
     }
 
