@@ -1,7 +1,5 @@
 package Playing_with_AI;
 
-import Playing_with_each_other.Board;
-import Playing_with_each_other.TicTacToeGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +9,7 @@ import java.awt.event.ActionListener;
 public class TicTacToeGuIAi {
     private JFrame frame;
     private JButton[][] buttons;
-    private Board board;
+    private BoardAi boardAi;
     private char currentPlayer;
 
     public TicTacToeGuIAi() {
@@ -20,7 +18,7 @@ public class TicTacToeGuIAi {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridBagLayout());
 
-        board = new Board();
+        boardAi = new BoardAi();
         buttons = new JButton[3][3];
 
         chooseStartingPlayer();
@@ -62,15 +60,16 @@ public class TicTacToeGuIAi {
                 buttons[i][j].setForeground(Color.white);
                 final int row = i;
                 final int col = j;
+
                 buttons[i][j].addActionListener(new ActionListener() {
                     @Override public void actionPerformed(ActionEvent e){
-                        if (board.makeMove(row, col, currentPlayer)) {
+                        if (boardAi.makeMove(row, col, currentPlayer)) {
                             buttons[row][col].setText(String.valueOf(currentPlayer));
-                            char winner = board.checkWinner();
-                            if (winner != '-') {
-                                JOptionPane.showMessageDialog(frame, "Игрок " + winner + " победа!");
-                                resetGame();
-                            } else if (board.isFull()) {
+                            char winner = boardAi.checkWinner();
+                            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+                            if (currentPlayer != 'О') {
+                                aiMove();
+                            } else if (boardAi.isFull()) {
                                 JOptionPane.showMessageDialog(frame, "Ничья!");
                                 resetGame();
                             } else {
@@ -89,7 +88,7 @@ public class TicTacToeGuIAi {
     public boolean isBoardFull() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board.isValidMove(i, j)) {
+                if (boardAi.isValidMove(i, j)) {
                     return false;
                 }
             }
@@ -98,7 +97,7 @@ public class TicTacToeGuIAi {
     }
 
     public void resetGame() {
-        board.initializeBoard();
+        boardAi.initializeBoard();
         chooseStartingPlayer();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -108,7 +107,30 @@ public class TicTacToeGuIAi {
     }
 
     public static void main(String[] args) {
-        new TicTacToeGUI();
+        new TicTacToeGuIAi();
+    }
+
+    public void aiMove() {
+        BoardAi boardAi = new BoardAi();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardAi.board[i][j] = this.boardAi.board[i][j];
+            }
+        }
+
+        int[] bestMove = boardAi.findBestMove();
+        if (bestMove[0] != -1 && bestMove[1] != -1) {
+            boardAi.makeMove(bestMove[0], bestMove[1], 'O');
+            buttons[bestMove[0]][bestMove[1]].setText("О");
+            char winner = boardAi.checkWinner();
+            if (winner != '-') {
+                JOptionPane.showMessageDialog(frame, "Игрок " + winner + " победа!");
+                resetGame();
+            } else if (boardAi.isFull()) {
+                JOptionPane.showMessageDialog(frame, "Ничья!");
+                resetGame();
+            }
+        }
     }
 }
 

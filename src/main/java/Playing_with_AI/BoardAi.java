@@ -64,4 +64,61 @@ public class BoardAi {
         }
         return true;
     }
+
+    public int minimax(char[][] board, int depth, boolean isMaximizing) {
+        char winner = checkWinner();
+        if (winner == 'X') return -10 + depth;
+        if (winner == 'O') return 10 - depth;
+        if (isFull()) return 0;
+
+        if (isMaximizing) {
+            int bestScore = Integer.MIN_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (board[i][j] == '-') {
+                        board[i][j] = 'O';
+                        int score = minimax(board, depth + 1, false);
+                        board[i][j] = '-';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
+        } else {
+            int bestScore = Integer.MAX_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (board[i][j] == '-') {
+                        board[i][j] = 'X';
+                        int score = minimax(board, depth + 1, true);
+                        board[i][j] = '-';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
+        }
+    }
+
+    public int[] findBestMove() {
+        int bestScore = Integer.MIN_VALUE;
+        int[] bestMove = new int[]{-1, -1};
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '-') {
+                    board[i][j] = 'O';
+                    int score = minimax(board, 0, false);
+                    board[i][j] = '-';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove[0] = i;
+                        bestMove[1] = j;
+                    }
+                }
+            }
+        }
+        return bestMove;
+    }
+
 }
